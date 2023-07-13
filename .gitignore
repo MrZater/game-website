@@ -1,0 +1,42 @@
+
+# 日志
+# 忽略所有日志文件
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# 忽略所有 node_modules 目录
+node_modules
+
+# 忽略所有编译后的文件
+dist
+dist-ssr
+
+# 忽略所有本地文件
+*.local
+
+# 编辑器相关文件
+# 忽略所有 VSCode 相关文件，但是不忽略 extensions.json 文件
+.vscode/*
+!.vscode/extensions.json
+# 忽略缓存文件
+.vite-cache
+
+# 忽略所有 IDEA 相关文件
+.idea
+
+# 忽略所有 DS_Store 文件
+.DS_Store
+
+# 忽略所有 Visual Studio 相关文件
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+

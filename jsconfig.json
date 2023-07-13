@@ -1,0 +1,17 @@
+{
+  // 编译器选项
+  "compilerOptions": {
+    // 目标ECMAScript版本
+    "target": "es6",
+    // 基础路径
+    "baseUrl": ".",
+    // 路径映射
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  },
+  // 排除的文件夹
+  "exclude": ["node_modules", "dist"],
+  // 包含的文件夹
+  "include": ["src/**/*"]
+}
