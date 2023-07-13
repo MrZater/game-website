@@ -21,39 +21,39 @@
 </template>
 
 <script setup>
-  import { reactive, ref } from 'vue'
-  import { useRouter } from 'vue-router'
-  import { getGameInfo } from '@/api/index'
-  const router = useRouter() // 使用vue-router的useRouter函数
-  const showReady = ref(true) // 创建一个响应式引用，初始值为true
-  const gameId = router.currentRoute.value.query?.id // 从当前路由中获取游戏ID
-  const gameInfo = reactive({
-    // 创建一个响应式对象，用于存储游戏信息
-    name: '',
-    desc: '',
-    icon: ''
-  })
-  const emits = defineEmits(['toload']) // 定义一个emits函数，用于触发'toload'事件
-  const readyTitle = ref('Play Game') // 创建一个响应式引用，初始值为'Play Game'
-  const readyIcon = ref('play') // 创建一个响应式引用，初始值为'play'
-  function goPlay() {
-    // 定义一个函数，用于处理点击游戏按钮的逻辑
-    readyTitle.value = 'Loading...' // 将readyTitle的值设置为'Loading...'
-    readyIcon.value = 'loading' // 将readyIcon的值设置为'loading'
-    setTimeout(() => {
-      // 设置一个延时器
-      showReady.value = false // 3秒后将showReady的值设置为false
-    }, 3000)
-    emits('toload') // 触发'toload'事件
-  }
-  async function getGameInfoFunc(id) {
-    // 定义一个异步函数，用于获取游戏信息
-    const { data } = await getGameInfo(id) // 调用getGameInfo函数，获取游戏信息
-    gameInfo.name = data.name // 将获取到的游戏名称赋值给gameInfo.name
-    gameInfo.desc = data.desc.slice(0, 500) + '...' // 将获取到的游戏描述赋值给gameInfo.desc
-    gameInfo.icon = data.icon // 将获取到的游戏图标赋值给gameInfo.icon
-  }
-  getGameInfoFunc(gameId) // 调用getGameInfoFunc函数，传入游戏ID
+import { reactive, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { getGameInfo } from '@/api/index'
+const router = useRouter() // 使用vue-router的useRouter函数
+const showReady = ref(true) // 创建一个响应式引用，初始值为true
+const gameId = router.currentRoute.value.query?.id // 从当前路由中获取游戏ID
+const gameInfo = reactive({
+  // 创建一个响应式对象，用于存储游戏信息
+  name: '',
+  desc: '',
+  icon: '',
+})
+const emits = defineEmits(['toload']) // 定义一个emits函数，用于触发'toload'事件
+const readyTitle = ref('Play Game') // 创建一个响应式引用，初始值为'Play Game'
+const readyIcon = ref('play') // 创建一个响应式引用，初始值为'play'
+function goPlay(){
+  // 定义一个函数，用于处理点击游戏按钮的逻辑
+  readyTitle.value = 'Loading...' // 将readyTitle的值设置为'Loading...'
+  readyIcon.value = 'loading' // 将readyIcon的值设置为'loading'
+  setTimeout(() => {
+    // 设置一个延时器
+    showReady.value = false // 3秒后将showReady的值设置为false
+  }, 3000)
+  emits('toload') // 触发'toload'事件
+}
+async function getGameInfoFunc(id){
+  // 定义一个异步函数，用于获取游戏信息
+  const { data } = await getGameInfo(id) // 调用getGameInfo函数，获取游戏信息
+  gameInfo.name = data.name // 将获取到的游戏名称赋值给gameInfo.name
+  gameInfo.desc = data.desc.slice(0, 500) + '...' // 将获取到的游戏描述赋值给gameInfo.desc
+  gameInfo.icon = data.icon // 将获取到的游戏图标赋值给gameInfo.icon
+}
+getGameInfoFunc(gameId) // 调用getGameInfoFunc函数，传入游戏ID
 </script>
 
 <style scoped lang="scss">

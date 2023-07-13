@@ -4,7 +4,12 @@
     <form id="form" @submit.prevent="submitForm">
       <div class="form-group">
         <label for="name">Name</label>
-        <input v-model="formquery.name" type="text" name="name" id="name" placeholder="Name" required />
+        <input v-model="formquery.name"
+type="text"
+name="name"
+id="name"
+placeholder="Name"
+required />
       </div>
       <div class="form-group">
         <label for="email">Email</label>
@@ -12,7 +17,12 @@
       </div>
       <div class="form-group">
         <label for="title">Title</label>
-        <input v-model="formquery.title" type="text" name="title" id="title" placeholder="Title" required />
+        <input v-model="formquery.title"
+type="text"
+name="title"
+id="title"
+placeholder="Title"
+required />
       </div>
       <div class="form-group">
         <label for="message">Message</label>
@@ -24,23 +34,23 @@
 </template>
 
 <script setup>
-  import { reactive, ref } from 'vue'
-  import { contactUs } from '@/api/index'
-  import { useRouter } from 'vue-router'
-  const router = useRouter() // 使用useRouter()函数获取路由实例
-  const form = ref(null) // 创建一个ref实例，用于引用表单元素
-  const formquery = reactive({
-    // 使用reactive()函数创建响应式对象formquery
-    name: '', // 表单字段name，初始值为空字符串
-    email: '', // 表单字段email，初始值为空字符串
-    title: '', // 表单字段title，初始值为空字符串
-    message: '' // 表单字段message，初始值为空字符串
-  })
-  function submitForm() {
-    // 定义submitForm()函数，用于提交表单
-    contactUs({ ...formquery }) // 调用contactUs()函数，传递formquery对象作为参数
-    router.push({ name: 'Home' }) // 跳转到Home页面
-  }
+import { reactive, ref } from 'vue'
+import { contactUs } from '@/api/index'
+import { useRouter } from 'vue-router'
+const router = useRouter() // 使用useRouter()函数获取路由实例
+const form = ref(null) // 创建一个ref实例，用于引用表单元素
+const formquery = reactive({
+  // 使用reactive()函数创建响应式对象formquery
+  name: '', // 表单字段name，初始值为空字符串
+  email: '', // 表单字段email，初始值为空字符串
+  title: '', // 表单字段title，初始值为空字符串
+  message: '', // 表单字段message，初始值为空字符串
+})
+function submitForm(){
+  // 定义submitForm()函数，用于提交表单
+  contactUs({ ...formquery }) // 调用contactUs()函数，传递formquery对象作为参数
+  router.push({ name: 'Home' }) // 跳转到Home页面
+}
 </script>
 
 <style lang="scss" scoped>

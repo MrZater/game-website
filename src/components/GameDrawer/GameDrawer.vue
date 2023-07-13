@@ -21,63 +21,63 @@
 </template>
 
 <script setup>
-  import { ref, inject } from 'vue'
-  import { getSuggestGames, getHomeBar } from '@/api/index'
-  import { useRouter } from 'vue-router'
-  // 定义props，包含gameId属性
-  const props = defineProps({
-    gameId: {
-      default: '',
-      type: [String, Number]
-    }
+import { ref, inject } from 'vue'
+import { getSuggestGames, getHomeBar } from '@/api/index'
+import { useRouter } from 'vue-router'
+// 定义props，包含gameId属性
+const props = defineProps({
+  gameId: {
+    default: '',
+    type: [String, Number],
+  },
+})
+// 使用vue-router的useRouter函数
+const router = useRouter()
+// 定义推荐游戏的响应式引用
+const recommendGames = ref([{}, {}, {}, {}, {}])
+// 定义主页栏列表的响应式引用
+const btnList = ref([])
+// 定义是否展开的响应式引用
+const isExpand = ref(false)
+// 定义获取推荐游戏的异步函数
+async function getSuggestGamesFunc(){
+  const { data = []} = await getSuggestGames({
+    gameId: props.gameId,
+    num: 6,
   })
-  // 使用vue-router的useRouter函数
-  const router = useRouter()
-  // 定义推荐游戏的响应式引用
-  const recommendGames = ref([{}, {}, {}, {}, {}])
-  // 定义主页栏列表的响应式引用
-  const btnList = ref([])
-  // 定义是否展开的响应式引用
-  const isExpand = ref(false)
-  // 定义获取推荐游戏的异步函数
-  async function getSuggestGamesFunc() {
-    const { data = [] } = await getSuggestGames({
-      gameId: props.gameId,
-      num: 6
-    })
-    // 更新推荐游戏的值
-    recommendGames.value = data
-  }
-  // 定义获取主页栏列表的异步函数
-  async function getBtnList() {
-    const { data = [] } = await getHomeBar()
-    // 更新主页栏列表的值
-    btnList.value = data
-  }
-  // 定义跳转搜索结果的函数
-  function goSearch(item) {
-    router.push({
-      name: 'Result',
-      query: {
-        key: item.id,
-        type: 2,
-        name: item.name
-      }
-    })
-  }
-  // 定义跳转详情页的函数
-  function goDetail(id) {
-    router.push({
-      name: 'Exhibition',
-      query: { id }
-    })
-  }
-  // 从父组件注入changeShowDialog函数
-  const changeShowDialog = inject('changeShowDialog')
-  // 调用获取主页栏列表的函数
-  getBtnList()
-  // 调用获取推荐游戏的函数
-  getSuggestGamesFunc()
+  // 更新推荐游戏的值
+  recommendGames.value = data
+}
+// 定义获取主页栏列表的异步函数
+async function getBtnList(){
+  const { data = []} = await getHomeBar()
+  // 更新主页栏列表的值
+  btnList.value = data
+}
+// 定义跳转搜索结果的函数
+function goSearch(item){
+  router.push({
+    name: 'Result',
+    query: {
+      key: item.id,
+      type: 2,
+      name: item.name,
+    },
+  })
+}
+// 定义跳转详情页的函数
+function goDetail(id){
+  router.push({
+    name: 'Exhibition',
+    query: { id },
+  })
+}
+// 从父组件注入changeShowDialog函数
+const changeShowDialog = inject('changeShowDialog')
+// 调用获取主页栏列表的函数
+getBtnList()
+// 调用获取推荐游戏的函数
+getSuggestGamesFunc()
 </script>
 
 <style lang="scss" scoped>

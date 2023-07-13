@@ -29,71 +29,71 @@
 </template>
 
 <script setup>
-  import { watch, ref, reactive } from 'vue'
-  import { useRouter } from 'vue-router'
-  import { userAct, getGameInfo, getSuggestGames } from '@/api/index'
-  import GameListComp from '@/components/GameListComp/index.vue'
-  const recommendGames = ref([{}, {}, {}, {}, {}]) // 推荐游戏列表
-  const route = useRouter() // 路由
-  const isDetail = ref(route.currentRoute.value.name === 'Detail') // 判断是否为详情页
-  let gameInfo = reactive({}) // 当前游戏详情
-  const key = ref('') // 游戏详情的key
-  watch(
-    () => route,
-    async (val) => {
-      // 监听路由变化
-      isDetail.value = route.currentRoute.value.name === 'Detail' // 判断是否为详情页
-      const gameId = val.currentRoute.value.query?.id // 获取游戏id
-      getGameInfoFunc(gameId) // 获取游戏详情
-      getSuggestGamesFunc(gameId) // 获取推荐游戏
-    },
-    {
-      immediate: true,
-      deep: true
-    }
-  )
-  const goBack = () => {
-    // 返回首页
-    userAct('back', isDetail.value ? 'detail2' : 'detail1', gameInfo.id) // 用户行为上报
-    scrollTo(0, 0) // 滚动到页面顶部
-    route.push({ name: 'Home' }) // 跳转到首页
-  }
-  const goPlay = () => {
-    // 点击开始游戏
-    // play2点击上报
-    userAct('play2', 'detail2', gameInfo.id) // 用户行为上报
-    route.push({
-      // 跳转到游戏页面
-      name: 'Game',
-      query: { id: gameInfo.id }
-    })
-  }
-  const goDetail = () => {
+import { watch, ref, reactive } from 'vue'
+import { useRouter } from 'vue-router'
+import { userAct, getGameInfo, getSuggestGames } from '@/api/index'
+import GameListComp from '@/components/GameListComp/index.vue'
+const recommendGames = ref([{}, {}, {}, {}, {}]) // 推荐游戏列表
+const route = useRouter() // 路由
+const isDetail = ref(route.currentRoute.value.name === 'Detail') // 判断是否为详情页
+let gameInfo = reactive({}) // 当前游戏详情
+const key = ref('') // 游戏详情的key
+watch(
+  () => route,
+  async val => {
+    // 监听路由变化
+    isDetail.value = route.currentRoute.value.name === 'Detail' // 判断是否为详情页
+    const gameId = val.currentRoute.value.query?.id // 获取游戏id
+    getGameInfoFunc(gameId) // 获取游戏详情
+    getSuggestGamesFunc(gameId) // 获取推荐游戏
+  },
+  {
+    immediate: true,
+    deep: true,
+  },
+)
+const goBack = () => {
+  // 返回首页
+  userAct('back', isDetail.value ? 'detail2' : 'detail1', gameInfo.id) // 用户行为上报
+  scrollTo(0, 0) // 滚动到页面顶部
+  route.push({ name: 'Home' }) // 跳转到首页
+}
+const goPlay = () => {
+  // 点击开始游戏
+  // play2点击上报
+  userAct('play2', 'detail2', gameInfo.id) // 用户行为上报
+  route.push({
+    // 跳转到游戏页面
+    name: 'Game',
+    query: { id: gameInfo.id },
+  })
+}
+const goDetail = () => {
+  // 跳转到详情页
+  // play1点击上报
+  userAct('play1', 'detail1', gameInfo.id) // 用户行为上报
+  scrollTo(0, 0) // 滚动到页面顶部
+  route.push({
     // 跳转到详情页
-    // play1点击上报
-    userAct('play1', 'detail1', gameInfo.id) // 用户行为上报
-    scrollTo(0, 0) // 滚动到页面顶部
-    route.push({
-      // 跳转到详情页
-      name: 'Detail',
-      query: { id: gameInfo.id }
-    })
-  }
-  async function getGameInfoFunc(id) {
-    // 获取游戏详情
-    const { data = {} } = await getGameInfo(id) // 调用API获取游戏详情
-    gameInfo = reactive(data) // 将游戏详情设置为响应式对象
-    key.value = gameInfo.id // 设置游戏详情的key
-  }
-  async function getSuggestGamesFunc(id) {
-    // 获取推荐游戏
-    const { data = [] } = await getSuggestGames({
-      // 调用API获取推荐游戏列表
-      gameId: +id,
-      num: 9
-    })
-    recommendGames.value = data // 设置推荐游戏列表
-  }
+    name: 'Detail',
+    query: { id: gameInfo.id },
+  })
+}
+async function getGameInfoFunc(id){
+  // 获取游戏详情
+  const { data = {}} = await getGameInfo(id) // 调用API获取游戏详情
+  gameInfo = reactive(data) // 将游戏详情设置为响应式对象
+  key.value = gameInfo.id // 设置游戏详情的key
+}
+async function getSuggestGamesFunc(id){
+  // 获取推荐游戏
+  const { data = []} = await getSuggestGames({
+    // 调用API获取推荐游戏列表
+    gameId: +id,
+    num: 9,
+  })
+  recommendGames.value = data // 设置推荐游戏列表
+}
 </script>
 
 <style lang="scss" scoped>

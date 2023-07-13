@@ -30,32 +30,32 @@
 </template>
 
 <script setup>
-  import { onUnmounted, ref } from 'vue'
-  // 定义一个响应式引用isAggree，默认值为false
-  const isAggree = ref(false)
-  // 定义一个emits函数，用于触发'close-dialog'事件
-  const emits = defineEmits(['close-dialog'])
-  // 在组件卸载时移除对'wheel'事件的监听
-  onUnmounted(() => {
-    window.removeEventListener('wheel', preventWheel)
-  })
-  // 在window对象上添加对'wheel'事件的监听
-  window.addEventListener('wheel', preventWheel, { passive: false })
-  // 定义一个关闭对话框的函数，触发'close-dialog'事件
-  function closeDialog() {
-    emits('close-dialog')
+import { onUnmounted, ref } from 'vue'
+// 定义一个响应式引用isAggree，默认值为false
+const isAggree = ref(false)
+// 定义一个emits函数，用于触发'close-dialog'事件
+const emits = defineEmits(['close-dialog'])
+// 在组件卸载时移除对'wheel'事件的监听
+onUnmounted(() => {
+  window.removeEventListener('wheel', preventWheel)
+})
+// 在window对象上添加对'wheel'事件的监听
+window.addEventListener('wheel', preventWheel, { passive: false })
+// 定义一个关闭对话框的函数，触发'close-dialog'事件
+function closeDialog(){
+  emits('close-dialog')
+}
+// 定义一个确认函数，如果isAggree的值为false，则直接返回，否则关闭对话框
+function confirm(){
+  if (!isAggree.value) {
+    return
   }
-  // 定义一个确认函数，如果isAggree的值为false，则直接返回，否则关闭对话框
-  function confirm() {
-    if (!isAggree.value) {
-      return
-    }
-    closeDialog()
-  }
-  // 定义一个阻止滚动事件的函数
-  function preventWheel(e) {
-    e.preventDefault()
-  }
+  closeDialog()
+}
+// 定义一个阻止滚动事件的函数
+function preventWheel(e){
+  e.preventDefault()
+}
 </script>
 
 <style lang="scss" scoped>

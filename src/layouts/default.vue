@@ -42,98 +42,98 @@
 </template>
 
 <script setup>
-  import { reactive, ref, watch, provide, nextTick } from 'vue'
-  import { useRouter } from 'vue-router'
-  import { userAct, getCategoryList } from '@/api/index'
-  import hasload from '@/utils/hasLoading'
-  import windowListener from '@/utils/windowListener'
-  import nameObj from '@/utils/routeNameMaps'
-  import PersonalDialog from '@/components/PersonalDialog/PersonalDialog.vue'
-  // 通过session判断是否是第一次加载
-  if (!hasload()) {
-    // 如果没有加载过
-    userAct('view') // 调用userAct函数，传入参数'view'
+import { reactive, ref, watch, provide, nextTick } from 'vue'
+import { useRouter } from 'vue-router'
+import { userAct, getCategoryList } from '@/api/index'
+import hasload from '@/utils/hasLoading'
+import windowListener from '@/utils/windowListener'
+import nameObj from '@/utils/routeNameMaps'
+import PersonalDialog from '@/components/PersonalDialog/PersonalDialog.vue'
+// 通过session判断是否是第一次加载
+if (!hasload()) {
+  // 如果没有加载过
+  userAct('view') // 调用userAct函数，传入参数'view'
+}
+// 定义路由名称
+const routeName = ref('') // 定义一个ref变量routeName，初始值为空字符串
+// 定义路由
+const route = reactive(useRouter()) // 定义一个reactive变量route，值为useRouter()的返回值
+// 定义是否是游戏
+const isShow = ref(false) // 定义一个ref变量isShow，初始值为false
+// 搜索模块是否显示
+const isShowSearch = ref(false) // 定义一个ref变量isShowSearch，初始值为false
+const searchword = ref('') // 定义一个ref变量searchword，初始值为空字符串
+const searcList = ref([]) // 定义一个ref变量searcList，初始值为空数组
+const showDialog = ref(false) // 定义一个ref变量showDialog，初始值为false
+// 监听路由名称变化
+watch(
+  () => route.currentRoute.name, // 监听route.currentRoute.name的变化
+  val => {
+    // 当变化时执行回调函数
+    scrollTo(0, 0) // 滚动到页面顶部
+    isShowSearch.value = false // 将isShowSearch的值设为false
+    // 如果路由名称是'Game'，则isShow为true
+    isShow.value = !['Game', 'Ready'].includes(val) // 如果val不是'Game'或'Ready'，则isShow为true
+    // 如果路由名称是'Home'，则routeName为'index'，否则根据路由名称赋值
+    routeName.value = nameObj[val] // 根据val的值从nameObj对象中获取对应的值，赋给routeName
+  },
+  {
+    deep: true, // 深度监听
+    immediate: true, // 立即执行回调函数
+  },
+)
+windowListener(routeName) // 调用windowListener函数，传入参数routeName
+function goHome(){
+  // 定义goHome函数
+  if (routeName.value === 'index') {
+    // 如果routeName的值为'index'
+    return // 返回
   }
-  // 定义路由名称
-  const routeName = ref('') // 定义一个ref变量routeName，初始值为空字符串
-  // 定义路由
-  const route = reactive(useRouter()) // 定义一个reactive变量route，值为useRouter()的返回值
-  // 定义是否是游戏
-  const isShow = ref(false) // 定义一个ref变量isShow，初始值为false
-  // 搜索模块是否显示
-  const isShowSearch = ref(false) // 定义一个ref变量isShowSearch，初始值为false
-  const searchword = ref('') // 定义一个ref变量searchword，初始值为空字符串
-  const searcList = ref([]) // 定义一个ref变量searcList，初始值为空数组
-  const showDialog = ref(false) // 定义一个ref变量showDialog，初始值为false
-  // 监听路由名称变化
-  watch(
-    () => route.currentRoute.name, // 监听route.currentRoute.name的变化
-    (val) => {
-      // 当变化时执行回调函数
-      scrollTo(0, 0) // 滚动到页面顶部
-      isShowSearch.value = false // 将isShowSearch的值设为false
-      // 如果路由名称是'Game'，则isShow为true
-      isShow.value = !['Game', 'Ready'].includes(val) // 如果val不是'Game'或'Ready'，则isShow为true
-      // 如果路由名称是'Home'，则routeName为'index'，否则根据路由名称赋值
-      routeName.value = nameObj[val] // 根据val的值从nameObj对象中获取对应的值，赋给routeName
+  userAct('back', routeName.value) // 调用userAct函数，传入参数'back'和routeName的值
+  route.push({ name: 'Home' }) // 跳转到name为'Home'的路由
+}
+function changeShowDialog(val){
+  // 定义changeShowDialog函数，接收一个参数val
+  showDialog.value = val // 将showDialog的值设为val
+}
+provide('changeShowDialog', changeShowDialog) // 提供'changeShowDialog'的值为changeShowDialog函数
+async function showSearch(){
+  // 定义一个异步函数showSearch
+  isShowSearch.value = !isShowSearch.value // 将isShowSearch的值取反
+  if (!isShowSearch.value) {
+    // 如果isShowSearch的值为假
+    return // 则返回
+  }
+  await nextTick() // 等待下一个tick
+  const searchWrapper = document.getElementsByClassName('search-wrapper')[0] // 获取类名为'search-wrapper'的第一个元素
+  scrollTo(0, 0) // 将页面滚动到顶部
+  searchWrapper.scrollTo(0, 0) // 将搜索框滚动到顶部
+}
+function handleSearch(key, type, name){
+  // 定义handleSearch函数，接收三个参数key、type和name
+  if (!key) {
+    // 如果key不存在
+    return // 返回
+  }
+  searchword.value = '' // 将searchword的值设为空字符串
+  showSearch() // 调用showSearch函数
+  route.push({
+    // 跳转到指定路由
+    name: 'Result', // 路由名称为'Result'
+    query: {
+      // 路由参数
+      key,
+      type,
+      name, // key、type和name分别为传入的参数值
     },
-    {
-      deep: true, // 深度监听
-      immediate: true // 立即执行回调函数
-    }
-  )
-  windowListener(routeName) // 调用windowListener函数，传入参数routeName
-  function goHome() {
-    // 定义goHome函数
-    if (routeName.value === 'index') {
-      // 如果routeName的值为'index'
-      return // 返回
-    }
-    userAct('back', routeName.value) // 调用userAct函数，传入参数'back'和routeName的值
-    route.push({ name: 'Home' }) // 跳转到name为'Home'的路由
-  }
-  function changeShowDialog(val) {
-    // 定义changeShowDialog函数，接收一个参数val
-    showDialog.value = val // 将showDialog的值设为val
-  }
-  provide('changeShowDialog', changeShowDialog) // 提供'changeShowDialog'的值为changeShowDialog函数
-  async function showSearch() {
-    // 定义一个异步函数showSearch
-    isShowSearch.value = !isShowSearch.value // 将isShowSearch的值取反
-    if (!isShowSearch.value) {
-      // 如果isShowSearch的值为假
-      return // 则返回
-    }
-    await nextTick() // 等待下一个tick
-    const searchWrapper = document.getElementsByClassName('search-wrapper')[0] // 获取类名为'search-wrapper'的第一个元素
-    scrollTo(0, 0) // 将页面滚动到顶部
-    searchWrapper.scrollTo(0, 0) // 将搜索框滚动到顶部
-  }
-  function handleSearch(key, type, name) {
-    // 定义handleSearch函数，接收三个参数key、type和name
-    if (!key) {
-      // 如果key不存在
-      return // 返回
-    }
-    searchword.value = '' // 将searchword的值设为空字符串
-    showSearch() // 调用showSearch函数
-    route.push({
-      // 跳转到指定路由
-      name: 'Result', // 路由名称为'Result'
-      query: {
-        // 路由参数
-        key,
-        type,
-        name // key、type和name分别为传入的参数值
-      }
-    })
-  }
-  async function getCategoryListFunc() {
-    // 定义getCategoryListFunc函数
-    const { data } = await getCategoryList() // 调用getCategoryList函数，并将返回值的data属性解构赋值给data变量
-    searcList.value = data // 将searcList的值设为data
-  }
-  getCategoryListFunc() // 调用getCategoryListFunc函数
+  })
+}
+async function getCategoryListFunc(){
+  // 定义getCategoryListFunc函数
+  const { data } = await getCategoryList() // 调用getCategoryList函数，并将返回值的data属性解构赋值给data变量
+  searcList.value = data // 将searcList的值设为data
+}
+getCategoryListFunc() // 调用getCategoryListFunc函数
 </script>
 
 <style scoped lang="scss">
